@@ -663,7 +663,7 @@ export class Details {
       mesh(new THREE.BoxGeometry(0.2, 0.03, 0.02), basic({ color: 0x000000 }), 0, 0.03, 0.14, head);
       const spear = mesh(new THREE.CylinderGeometry(0.015, 0.015, 2.6, 4), iron, 0.38, 1.3, 0.05, g);
       mesh(new THREE.ConeGeometry(0.04, 0.2, 4), metal, 0.38, 2.7, 0.05, g);
-      const wp = g.position.clone(); this.solid(wp.x, wp.z, 0.45);
+      const wp = g.position.clone(); this.solid(wp.x, wp.z, 0.45); w.reserved.add(this.key(s.x, s.z)); // keep stations off this wall spot
       this.updaters.push((dt) => {
         if (this.looking(wp.x, wp.z, 40)) return;
         const p = this.game.player, want = Math.atan2(p.pos.x - wp.x, p.pos.z - wp.z) - g.rotation.y;
