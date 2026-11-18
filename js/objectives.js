@@ -80,7 +80,7 @@ export class Objectives {
 
     // candidate cells: floor cells away from the start, spaced apart
     const sp = world.spawn, used = [];
-    const all = shuffle(world.floorCells.filter(c => Math.max(Math.abs(c.x - sp.x), Math.abs(c.z - sp.z)) > 2 && world.ch(c.x, c.z) !== 'M'), r);
+    const all = shuffle(world.floorCells.filter(c => Math.max(Math.abs(c.x - sp.x), Math.abs(c.z - sp.z)) > 2 && world.ch(c.x, c.z) !== 'M' && !world.reserved.has(c.x + ',' + c.z)), r);
     const far = (c, min) => used.every(u => Math.max(Math.abs(u.x - c.x), Math.abs(u.z - c.z)) >= min);
     const take = (pred, minSpace = 2) => {
       for (const sp2 of [minSpace, 1, 0]) { const i = all.findIndex(c => pred(c) && far(c, sp2)); if (i >= 0) { const c = all.splice(i, 1)[0]; used.push(c); return c; } }

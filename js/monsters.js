@@ -100,6 +100,9 @@ function addEyeGlow(kind, head) {
   }
 }
 
+// A monster model with no AI (used for distant "watcher" sightings).
+export function buildMonster(kind) { const b = BUILD[kind](); addEyeGlow(kind, b.parts.head); return b; }
+
 export class Monster {
   constructor(game, kind, cell) {
     this.game = game; this.world = game.world; this.kind = kind; this.def = DEFS[kind];
@@ -116,7 +119,10 @@ export class Monster {
   }
 
   get hard() { return this.game.settings.difficulty === 'hard'; }
-  get chaseSpeed() { return this.def.chase[this.hard ? 1 : 0] * (1 + this.game.progress * 0.1); }
+  // How dangerous monsters are right now: 0 at the start, 1 once the objectives are ~85% done (or the exit is open).
+  // Early on they are slower, see less, notice you more slowly and give up sooner; this ramps to full strength.
+  get threat() { const g = this.game; if (g.escaping) return 1; const x = Math.min(1, g.progress / 0.85); return x * x * (3 - 2 * x); }
+  get chaseSpeed() { return this.def.chase[this.hard ? 1 : 0] * (0.78 + 0.22 * this.threat) * (1 + this.game.progress * 0.1); }
 
   dispose() { this.game.scene.remove(this.mesh); this.game.audio.stopVoice(this.voice); }
 
@@ -146,7 +152,7 @@ export class Monster {
   }
 
   pickWander() {
-    const pl = this.game.player.pos, bias = this.hard ? 0.45 : 0.25;
+    const pl = this.game.player.pos, bias = (this.hard ? 0.45 : 0.25) * (0.35 + 0.65 * this.threat);
     const near = R() < bias;
     const c = this.world.randomFloor(c => {
       const w = this.world.center(c.x, c.z), d = Math.hypot(w.x - pl.x, w.z - pl.z);
@@ -174,26 +180,26 @@ export class Monster {
     // --- perception ---
     let sees = false;
     if (!p.hidden && !g.invulnerable) {
-      const range = (p.flashOn ? def.sight : def.sight * 0.45) * (this.hard ? 1.15 : 1);
+      const range = (p.flashOn ? def.sight : def.sight * 0.45) * (this.hard ? 1.15 : 1) * (0.6 + 0.4 * this.threat);
       if (dist < range) {
         let diff = Math.atan2(dx, dz) - this.yaw; diff = Math.abs(Math.atan2(Math.sin(diff), Math.cos(diff)));
-        if ((dist < 3.5 || diff < def.fov * Math.PI / 360) && w.los(this.pos.x, this.pos.z, p.pos.x, p.pos.z)) sees = true;
+        if ((dist < 3 || diff < def.fov * (0.75 + 0.25 * this.threat) * Math.PI / 360) && w.los(this.pos.x, this.pos.z, p.pos.x, p.pos.z)) sees = true;
       }
     }
     if (sees) {
-      this.alert += dt * (dist < 7 ? 3.5 : 1.3) * (this.hard ? 1.6 : 1);
+      this.alert += dt * (dist < 7 ? 3.5 : 1.3) * (this.hard ? 1.6 : 1) * (0.45 + 0.55 * this.threat);
       this.lastSeen = t; this.lastKnown = p.pos.clone();
       if (this.alert >= 1) this.startChase();
       else if (this.state === 'wander') { this.state = 'investigate'; this.timer = 0; this.path = null; }
     } else {
       this.alert = Math.max(0, this.alert - dt * 0.25);
-      if (!p.hidden && p.noise > 0 && dist < p.noise && (this.state === 'wander' || this.state === 'search')) {
+      if (!p.hidden && p.noise > 0 && dist < p.noise * (0.55 + 0.45 * this.threat) && (this.state === 'wander' || this.state === 'search')) {
         this.state = 'investigate'; this.lastKnown = p.pos.clone(); this.path = null;
       }
     }
 
     // --- behaviour ---
-    let speed = def.walk, moving = true;
+    let speed = def.walk * (0.85 + 0.15 * this.threat), moving = true;
     if (this.state === 'chase') {
       speed = this.chaseSpeed;
       if (sees && w.walkClear(this.pos.x, this.pos.z, p.pos.x, p.pos.z)) { this.moveToward(p.pos.x, p.pos.z, speed, dt); this.path = null; }
@@ -205,7 +211,7 @@ export class Monster {
         }
         if (this.followPath(speed, dt) && !sees) this.beginSearch();
       }
-      if (t - this.lastSeen > (this.hard ? 6 : 4)) this.beginSearch();
+      if (t - this.lastSeen > (this.hard ? 6 : 4) * (0.6 + 0.4 * this.threat)) this.beginSearch();
     } else if (this.state === 'grab') {
       speed = this.chaseSpeed;
       const s = this.grabSpot;

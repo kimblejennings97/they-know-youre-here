@@ -209,6 +209,45 @@ export class AudioEngine {
   gameOver() { this.tone('sine', 40, 5, 0.4, { wet: 0.9, f2: 25 }); this.tone('sawtooth', 80, 4, 0.05, { filt: 300, wet: 0.9, f2: 60 }); }
   win() { [262, 330, 392, 523].forEach((f, i) => this.tone('triangle', f, 3, 0.08, { at: i * 0.25, wet: 0.7 })); }
 
+  // ---------- wildlife & props (vol 0..1, pan -1..1) ----------
+  owl(pan = R() * 1.6 - 0.8) {
+    const v = 0.07;
+    this.tone('sine', 410, 0.35, v, { pan, wet: 0.8, a: 0.06, f2: 380 });
+    this.tone('sine', 400, 0.18, v * 0.8, { at: 0.55, pan, wet: 0.8, a: 0.04 });
+    this.tone('sine', 395, 0.5, v, { at: 0.8, pan, wet: 0.8, a: 0.06, f2: 350 });
+  }
+  caw(vol, pan) {
+    if (vol < 0.01) return;
+    for (let i = 0; i < 2 + (R() * 2 | 0); i++) {
+      const at = i * 0.32;
+      this.tone('sawtooth', 640, 0.22, 0.09 * vol, { at, pan, wet: 0.5, f2: 420, filt: 1800, a: 0.01 });
+      this.burst(1400, 2, 0.2, 0.05 * vol, { at, pan, wet: 0.4 });
+    }
+  }
+  squeak(vol, pan) {
+    if (vol < 0.01) return;
+    for (let i = 0; i < 2; i++) this.tone('sine', 3200 + R() * 900, 0.06, 0.05 * vol, { at: i * 0.09, pan, wet: 0.2, f2: 2600 });
+  }
+  croak(vol, pan) {
+    if (vol < 0.01) return;
+    const t = this.t, o = this.osc('sawtooth', 95), lp = this.filter('lowpass', 500, 4), g = this.gain();
+    const am = this.osc('square', 28), ag = this.gain(0.5); am.connect(ag); ag.connect(g.gain);
+    o.connect(lp); lp.connect(g); this.route(g, 0.3, pan); this.env(g, t, 0.02, 0.06 * vol, 0.35);
+    o.start(t); am.start(t); o.stop(t + 0.45); am.stop(t + 0.45);
+  }
+  flutter(vol, pan) {
+    if (vol < 0.01) return;
+    for (let i = 0; i < 6; i++) this.burst(700, 1, 0.04, 0.05 * vol, { at: i * 0.05, pan, wet: 0.2, type: 'lowpass' });
+  }
+  whisper(pan = 0, vol = 1) {
+    for (let i = 0; i < 4; i++) this.burst(2400 + R() * 1400, 4, 0.12 + R() * 0.1, 0.06 * vol, { at: i * 0.15, pan, wet: 0.9, a: 0.03 });
+  }
+  musicBox(vol, pan) { // the rocking horse
+    if (vol < 0.01) return;
+    [784, 659, 698, 587, 523].forEach((f, i) => this.tone('sine', f * 0.97, 0.5, 0.05 * vol, { at: i * 0.38, pan, wet: 0.7, f2: f * 0.94 }));
+    this.tone('sawtooth', 70, 1.2, 0.03 * vol, { pan, filt: 400, wet: 0.4, f2: 90 }); // spring creak
+  }
+
   // ---------- continuous monster voice ----------
   voice(kind) {
     if (!this.ctx) return null;

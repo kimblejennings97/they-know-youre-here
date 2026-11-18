@@ -22,6 +22,9 @@ export class World {
     this.group = new THREE.Group(); scene.add(this.group);
     this.hideSpots = []; this.monsterSpawns = []; this.floorCells = []; this.flickers = []; this.screens = [];
     this.exitOpen = false; this.indoor = new Set(); this.wallDecals = [];
+    this.solids = [];          // round obstacles added by decor: {x, z, r}
+    this.reserved = new Set(); // cells decor occupies, so objectives aren't placed there
+    this.treePos = [];         // in-map tree trunks (camp), for posters on trunks
     for (let z = 0; z < this.h; z++) for (let x = 0; x < this.w; x++) {
       const c = this.rows[z][x];
       if (c === 'S') this.spawn = { x, z };
@@ -59,6 +62,10 @@ export class World {
     if (dz > 0) { const cz = Math.floor((nz + r) / CELL); for (let cx = x0; cx <= x1; cx++) if (!this.passable(cx, cz)) nz = Math.min(nz, cz * CELL - r - 1e-3); }
     else if (dz < 0) { const cz = Math.floor((nz - r) / CELL); for (let cx = x0; cx <= x1; cx++) if (!this.passable(cx, cz)) nz = Math.max(nz, (cz + 1) * CELL + r + 1e-3); }
     p.z = nz;
+    for (const s of this.solids) { // push out of round decor obstacles
+      const ex = p.x - s.x, ez = p.z - s.z, d = Math.hypot(ex, ez), m = s.r + r;
+      if (d < m && d > 1e-4) { p.x = s.x + ex / d * m; p.z = s.z + ez / d * m; }
+    }
   }
 
   los(ax, az, bx, bz) {
@@ -147,7 +154,7 @@ export class World {
           const [cx, cz] = q.pop(); x0 = Math.min(x0, cx); x1 = Math.max(x1, cx); z0 = Math.min(z0, cz); z1 = Math.max(z1, cz);
           for (const [dx, dz] of DIRS4) { const k = (cx + dx) + ',' + (cz + dz); if (!seen.has(k) && this.ch(cx + dx, cz + dz) === '#') { seen.add(k); q.push([cx + dx, cz + dz]); } }
         }
-        cabins.push({ x0, x1, z0, z1 });
+        cabins.push({ x0, x1, z0, z1 }); this.cabins = cabins;
         for (let cz = z0; cz <= z1; cz++) for (let cx = x0; cx <= x1; cx++) this.indoor.add(cx + ',' + cz);
       }
     }
@@ -197,7 +204,10 @@ export class World {
         const s = 0.8 + R() * 0.6, ry = R() * 6.3;
         trunks.push(mat4(wx, 2 * s, wz, ry, s, s, s)); leafA.push(mat4(wx, 3.6 * s, wz, ry, s, s, s)); leafB.push(mat4(wx, 5.3 * s, wz, ry + 1, s, s, s));
       };
-      for (let z = 0; z < this.h; z++) for (let x = 0; x < this.w; x++) if (this.ch(x, z) === 'T') tree((x + 0.5 + (R() - 0.5) * 0.4) * CELL, (z + 0.5 + (R() - 0.5) * 0.4) * CELL);
+      for (let z = 0; z < this.h; z++) for (let x = 0; x < this.w; x++) if (this.ch(x, z) === 'T') {
+        const tx = (x + 0.5 + (R() - 0.5) * 0.4) * CELL, tz = (z + 0.5 + (R() - 0.5) * 0.4) * CELL;
+        tree(tx, tz); this.treePos.push({ x, z, wx: tx, wz: tz });
+      }
       for (let z = -6; z < this.h + 6; z++) for (let x = -6; x < this.w + 6; x++) {
         if (x >= 0 && x < this.w && z >= 0 && z < this.h) continue;
         if (R() < 0.55) tree((x + R()) * CELL, (z + R()) * CELL);

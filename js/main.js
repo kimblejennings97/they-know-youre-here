@@ -9,6 +9,7 @@ import { AudioEngine } from './audio.js';
 import { Input } from './input.js';
 import * as store from './storage.js';
 import { AutoMap } from './automap.js';
+import { Details } from './details.js';
 
 const $ = (id) => document.getElementById(id);
 const LENGTHS = [5, 15, 30];
@@ -134,6 +135,7 @@ class Game {
     this.renderer.shadowMap.enabled = s.quality === 'high';
     this.world = new World(map, scene, (Math.random() * 1e9) | 0, s.quality);
     this.player = new Player(this, this.camera);
+    this.details = new Details(this); // before objectives: it reserves the cells its props stand on
     this.time = 0; this.progress = 0; this.escaping = false; this.invulnerable = false; this.invulnT = 0;
     this.lives = s.difficulty === 'easy' ? 3 : 1; this.senseCd = 0; this.senseT = 0; this.lastSting = -99; this.hudT = 0;
     this.objectives = new Objectives(this);
@@ -173,7 +175,7 @@ class Game {
     if (this.world) this.world.dispose();
     if (this.player) { this.camera.remove(this.player.flash, this.player.flash.target, this.player.spill); }
     this.audio.stopAmbience();
-    this.director = this.world = this.player = this.objectives = null;
+    this.director = this.world = this.player = this.objectives = this.details = null;
     $('toasts').innerHTML = '';
   }
 
@@ -334,6 +336,7 @@ class Game {
     this.objectives.update(dt, this.time);
     this.director.update(dt, this.time);
     if (this.state !== 'playing') return; // caught during monster update
+    this.details.update(dt, this.time);
     this.audio.tick(dt);
     this.findFocus();
     // escaped?
