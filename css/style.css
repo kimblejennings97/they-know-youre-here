@@ -150,6 +150,18 @@ body.touch #prompt { top: 64%; font-size: 15px; }
   #toasts { top: 14%; } #toasts div { font-size: 15px; }
   #topright #timer { font-size: 14px; } #lives { font-size: 16px; }
 }
+#automap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: rgba(0,0,0,0.62); }
+#automap-title { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--dim); }
+#automap-canvas { border: 1px solid var(--line); box-shadow: 0 0 40px rgba(0,0,0,0.8); image-rendering: pixelated; opacity: 0.94; }
+#automap-legend { font-size: 12px; color: var(--dim); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
+#automap-legend .k { display: inline-block; width: 10px; height: 10px; margin-left: 8px; }
+#automap-legend .you { background: #fff; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+#automap-legend .exit { background: #c02030; }
+#automap-legend .hide { background: #5fb0a0; }
+#automap-legend .task { background: #ffb030; transform: rotate(45deg) scale(0.8); }
+#automap-legend .hint { margin-left: 14px; }
+body.touch #automap-legend .hint { display: none; }
+#btn-map { top: calc(64px + env(safe-area-inset-top)); right: calc(68px + env(safe-area-inset-right)); width: 44px; height: 44px; font-size: 10px; }
 #rotate { display: none; }
 @media (orientation: portrait) {
   body.touch #rotate { display: block; position: absolute; left: 50%; bottom: 210px; transform: translateX(-50%); font-size: 13px; color: var(--dim); background: rgba(0,0,0,0.5); padding: 4px 10px; white-space: nowrap; }

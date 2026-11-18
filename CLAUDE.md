@@ -8,6 +8,7 @@ First-person browser horror game. Static files with no build step. Hosted on Git
 - `js/monsters.js`: monster models, `DEFS` (speeds, sight, scare framing), AI state machine (wander/investigate/chase/search/grab), and the spawn `Director` (spawn rate scales with progress and difficulty).
 - `js/objectives.js`: objective generation (counts per length: 3/5/8), item/station models, interaction rules (a "use" step needs every earlier step done).
 - `js/player.js`: movement, stamina, flashlight + battery, hiding. `js/input.js`: keyboard/mouse pointer lock + touch controls.
+- `js/automap.js`: map overlay (M/Tab/MAP button). Easy shows the full layout and all hiding spots. Hard shows only cells within ~2.3 cells of where the player has been. Task stations show only once visited, in both modes. The game keeps running while it's open.
 - `js/audio.js`: all sound synthesized with Web Audio. `js/textures.js`: procedural canvas textures.
 - `js/main.js`: menu, game loop, HUD, catch/jump scare, win/lose, eye adaptation. `js/storage.js`: settings + records in localStorage.
 

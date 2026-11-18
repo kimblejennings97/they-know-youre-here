@@ -8,6 +8,7 @@ import { Objectives } from './objectives.js';
 import { AudioEngine } from './audio.js';
 import { Input } from './input.js';
 import * as store from './storage.js';
+import { AutoMap } from './automap.js';
 
 const $ = (id) => document.getElementById(id);
 const LENGTHS = [5, 15, 30];
@@ -37,10 +38,12 @@ class Game {
       flash: () => { if (this.state === 'playing') this.player.toggleFlash(); },
       use: () => this.use(),
       sense: () => this.sense(),
+      map: () => { if (this.state === 'playing') this.automap.toggle(); },
       pause: () => { if (this.state === 'playing') this.pause(); else if (this.state === 'paused') this.resume(); },
       lockRequest: () => { if (this.state === 'playing' || this.state === 'ready') this.input.lock(); },
     });
     if (this.input.touch) document.body.classList.add('touch');
+    this.automap = new AutoMap(this);
     document.addEventListener('pointerlockchange', () => {
       const locked = document.pointerLockElement === this.canvas;
       if (locked && (this.state === 'ready' || this.state === 'paused')) this.setPlaying();
@@ -125,6 +128,7 @@ class Game {
     this.lives = s.difficulty === 'easy' ? 3 : 1; this.senseCd = 0; this.senseT = 0; this.lastSting = -99; this.hudT = 0;
     this.objectives = new Objectives(this);
     this.director = new Director(this);
+    this.automap.reset();
     this.audio.startAmbience(map.id);
     if (this.audio.ctx && this.audio.ctx.state === 'suspended') this.audio.ctx.resume();
     ['menu', 'end', 'pause', 'how', 'clicktoplay'].forEach(id => $(id).hidden = true);
@@ -145,7 +149,7 @@ class Game {
 
   pause() {
     if (this.state !== 'playing') return;
-    this.state = 'paused'; $('pause').hidden = false;
+    this.state = 'paused'; $('pause').hidden = false; this.automap.close();
     this.input.unlock();
     if (this.audio.ctx) this.audio.ctx.suspend();
   }
@@ -235,6 +239,7 @@ class Game {
     this.audio.scare();
     const fl = $('flashfx'); fl.style.transition = 'none'; fl.style.opacity = '0.9';
     requestAnimationFrame(() => { fl.style.transition = 'opacity 1.4s'; fl.style.opacity = '0'; });
+    this.automap.close();
     $('hideview').className = ''; $('prompt').className = ''; $('hud').hidden = true; $('intro').classList.remove('on');
     if (!this.scareLight) { this.scareLight = new THREE.PointLight(0xffd0c0, 6, 4, 1.5); }
     this.scene.add(this.scareLight);
@@ -274,7 +279,7 @@ class Game {
   }
 
   end(won) {
-    this.state = won ? 'win' : 'over'; this.input.unlock();
+    this.state = won ? 'win' : 'over'; this.input.unlock(); this.automap.close();
     const s = this.settings, o = this.objectives;
     let html = `<div>Time: ${store.fmtTime(this.time)}</div><div>Objectives: ${o.list.filter(x => x.done).length} / ${o.list.length}</div>`;
     if (won) {
@@ -315,6 +320,7 @@ class Game {
     this.hemi.intensity = this.map.hemi[2] * this.adapt;
     if (this.invulnerable) { this.invulnT -= dt; if (this.invulnT <= 0) this.invulnerable = false; }
     this.world.update(dt, this.time);
+    this.automap.update(dt);
     this.objectives.update(dt, this.time);
     this.director.update(dt, this.time);
     if (this.state !== 'playing') return; // caught during monster update

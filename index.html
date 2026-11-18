@@ -68,13 +68,14 @@
       <li><b>Your flashlight makes you easy to see.</b> Turn it off to sneak. Running is loud.</li>
       <li>If you're spotted, <b>break line of sight and hide</b> in a bush, trash can, locker, wardrobe or barrel. If one sees you climb in, it will pull you out.</li>
       <li><b>Sense</b> points you toward the nearest objective. It needs time to recharge.</li>
+      <li><b>Map:</b> on Easy you see the whole layout. On Hard it only shows places you've been. Task spots appear once you've found them. The game keeps running while it's open.</li>
       <li><b>Easy:</b> 3 lives, and your progress is kept when you're caught. <b>Hard:</b> one catch and it's over.</li>
     </ul>
     <div class="cols">
       <div><h3>Keyboard &amp; mouse</h3>
-        <p>WASD: move<br>Mouse: look<br>Shift: sprint<br>F / right-click: flashlight<br>E / left-click: interact, hide<br>Q: sense<br>Esc: pause</p></div>
+        <p>WASD: move<br>Mouse: look<br>Shift: sprint<br>F / right-click: flashlight<br>E / left-click: interact, hide<br>Q: sense<br>M / Tab: map<br>Esc: pause</p></div>
       <div><h3>Touch</h3>
-        <p>Left thumb: move (push far to sprint)<br>Right thumb: look<br>Buttons: use, light, sense, run</p></div>
+        <p>Left thumb: move (push far to sprint)<br>Right thumb: look<br>Buttons: use, light, sense, run, map</p></div>
     </div>
     <button class="big close">Got it</button>
   </div>
@@ -98,12 +99,18 @@
   <div id="toasts"></div>
   <div id="intro"></div>
   <div id="rotate">Turn your phone sideways for the best view</div>
+  <div id="automap" hidden>
+    <div id="automap-title"></div>
+    <canvas id="automap-canvas"></canvas>
+    <div id="automap-legend"><span class="k you"></span>You <span class="k exit"></span>Exit <span class="k hide"></span>Hiding spot <span class="k task"></span>Task <span class="hint">M / Tab to close</span></div>
+  </div>
 </section>
 
 <div id="touch" hidden>
   <div id="touch-zone"></div>
   <div id="joy"><div id="joy-knob"></div></div>
   <button id="btn-pause" class="tbtn small">II</button>
+  <button id="btn-map" class="tbtn small">MAP</button>
   <button id="btn-use" class="tbtn">USE</button>
   <button id="btn-light" class="tbtn">LIGHT</button>
   <button id="btn-sense" class="tbtn">SENSE</button>

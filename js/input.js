@@ -12,7 +12,8 @@ export class Input {
       if (e.code === 'KeyE' || e.code === 'Space') this.h.use();
       if (e.code === 'KeyQ') this.h.sense();
       if (e.code === 'KeyP') this.h.pause();
-      if (['Space', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault();
+      if (e.code === 'KeyM' || e.code === 'Tab') this.h.map();
+      if (['Space', 'ArrowUp', 'ArrowDown', 'Tab'].includes(e.code)) e.preventDefault();
     });
     addEventListener('keyup', (e) => this.keys.delete(e.code));
     addEventListener('blur', () => this.keys.clear());
@@ -68,6 +69,7 @@ export class Input {
     btn('btn-light', () => this.h.flash());
     btn('btn-sense', () => this.h.sense());
     btn('btn-pause', () => this.h.pause());
+    btn('btn-map', () => this.h.map());
     btn('btn-sprint', (el) => { this.sprintToggle = !this.sprintToggle; el.classList.toggle('on', this.sprintToggle); });
   }
 
