@@ -1,0 +1,210 @@
+// Map definitions. Each map is a grid; every cell is CELL world units square.
+//
+// Legend (shared):
+//   #  wall               .  floor              ,  alternate floor (path / tile / carpet)
+//   _  open-air floor (castle courtyard: no ceiling)
+//   C  prop obstacle      K  low prop (table / counter)
+//   H  hiding spot (primary type)   h  hiding spot (secondary type)
+//   L  light fixture (blocks)       T  tree (camp)       W  water (camp)
+//   S  player start       E  exit (locked until all objectives are done)
+//   M  monster spawn point (floor)
+
+export const CELL = 3;
+
+export const MAPS = [
+  {
+    id: 'camp',
+    name: 'Camp Blackwater',
+    tagline: 'Lights out was at nine. Nobody came back from the lake.',
+    monster: 'counselor',
+    monsterName: 'The Counselor',
+    outdoor: true,
+    cabinRoofs: true,
+    wallH: 3.2,
+    fog: 0x06080c, fogDensity: 0.075,
+    hemi: [0x34405a, 0x0a0a08, 1.1],
+    tex: { floor: 'grass', alt: 'dirt', wall: 'wood', indoor: 'woodFloor', roof: 'roof' },
+    hide: { H: 'bush', h: 'trashcan' },
+    prop: { C: 'crate', K: 'picnic', L: 'lamppost' },
+    lightColor: 0xffb46a,
+    exitLabel: 'camp gate',
+    finds: [
+      { item: 'tag', noun: 'name tags', title: "Find the missing campers' name tags" },
+      { item: 'page', noun: 'diary pages', title: "Collect pages from the counselor's diary" },
+      { item: 'photo', noun: 'photos', title: 'Find the scattered polaroids' },
+      { item: 'badge', noun: 'merit badges', title: 'Recover the lost merit badges' },
+    ],
+    tasks: [
+      { title: 'Restore power to the camp', steps: [
+        { type: 'pickup', item: 'fuse', label: 'Fuse', hint: 'Find a spare fuse' },
+        { type: 'use', item: 'fusebox', label: 'Fuse box', hint: 'Install the fuse in the fuse box' },
+        { type: 'use', item: 'breaker', label: 'Main breaker', hint: 'Throw the main breaker' } ] },
+      { title: 'Call the ranger station', steps: [
+        { type: 'pickup', item: 'battery', label: 'Radio battery', hint: 'Find a battery for the radio' },
+        { type: 'use', item: 'radio', label: 'Two-way radio', hint: 'Use the two-way radio' } ] },
+      { title: 'Light the signal fire', steps: [
+        { type: 'pickup', item: 'gascan', label: 'Gas can', hint: 'Find a gas can' },
+        { type: 'pickup', item: 'matches', label: 'Matches', hint: 'Find some matches' },
+        { type: 'use', item: 'firepit', label: 'Fire pit', hint: 'Light the fire pit' } ] },
+      { title: 'Ring the dinner bell', steps: [
+        { type: 'pickup', item: 'rope', label: 'Bell rope', hint: 'Find the bell rope' },
+        { type: 'use', item: 'bell', label: 'Dinner bell', hint: 'Ring the dinner bell' } ] },
+    ],
+    layout: [
+      'TTTTTTTTTTTTTTTETTTTTTTTTTTTTTTT',
+      'T..M.....T.....,.....T.....M...T',
+      'T.#####........,..........T....T',
+      'T.#C.C#..T.....,T...#####......T',
+      'T.#...#........,....#C.C#...H..T',
+      'T.#h..#..WWWWW.,....#...#......T',
+      'T.##.##.WWWWWW.,....#..h#...T..T',
+      'T......HWWWWWW.,....##.##......T',
+      'T..T.....WWWWW.,..........H....T',
+      'T......T.......,.T........L....T',
+      'T.H.......T....,......T....T...T',
+      'T....######....,.......######..T',
+      'TT...#K..K#....,L......#C..C#..T',
+      'T....#..h.#....,..H....#...h#..T',
+      'T....#K...#..T.,.......#C...#.TT',
+      'T....###.##....,.......##.###..T',
+      'T..T........H..,.....T.........T',
+      'T.......T......S...........H...T',
+      'T..H...........,..T......T.....T',
+      'T......T..#####.......T........T',
+      'T.........#..h#....H.......T...T',
+      'T..T......#C..#.............M..T',
+      'T....M....##.##...T....T.......T',
+      'T....T.........H.........H.....T',
+      'T..........T........L........T.T',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+    ],
+  },
+  {
+    id: 'arcade',
+    name: 'Pixel Palace',
+    tagline: 'Closed since the birthday party in 1994. The machines are still on.',
+    monster: 'grins',
+    monsterName: 'Mr. Grins',
+    outdoor: false,
+    wallH: 3.6,
+    fog: 0x07040c, fogDensity: 0.07,
+    hemi: [0x3a2a55, 0x080410, 1.0],
+    tex: { floor: 'carpet', alt: 'tile', wall: 'arcadeWall', ceiling: 'ceilingTile' },
+    hide: { H: 'trashcan', h: 'locker' },
+    prop: { C: 'cabinet', K: 'counter', L: 'claw' },
+    lightColor: 0xd070ff,
+    exitLabel: 'front doors',
+    finds: [
+      { item: 'ticket', noun: 'prize tickets', title: 'Collect the golden prize tickets' },
+      { item: 'token', noun: 'tokens', title: 'Find the lost game tokens' },
+      { item: 'tape', noun: 'VHS tapes', title: 'Find the security camera tapes' },
+      { item: 'plush', noun: 'plushies', title: 'Gather the Mr. Grins plushies' },
+    ],
+    tasks: [
+      { title: 'Reboot the security system', steps: [
+        { type: 'pickup', item: 'keycard', label: 'Manager keycard', hint: "Find the manager's keycard" },
+        { type: 'use', item: 'terminal', label: 'Office terminal', hint: 'Log in at the office terminal' },
+        { type: 'use', item: 'breaker', label: 'Main breaker', hint: 'Reset the main breaker' } ] },
+      { title: 'Open the prize counter', steps: [
+        { type: 'pickup', item: 'screwdriver', label: 'Screwdriver', hint: 'Find a screwdriver' },
+        { type: 'use', item: 'panel', label: 'Counter panel', hint: 'Unscrew the prize counter panel' } ] },
+      { title: 'Feed the cursed cabinet', steps: [
+        { type: 'pickup', item: 'goldtoken', label: 'Golden token', hint: 'Find the golden token' },
+        { type: 'use', item: 'cursedcab', label: 'Strange cabinet', hint: 'Insert it into the strange cabinet' } ] },
+      { title: 'Silence the party stage', steps: [
+        { type: 'pickup', item: 'wrench', label: 'Wrench', hint: 'Find a wrench' },
+        { type: 'use', item: 'speaker', label: 'Stage speaker', hint: 'Disconnect the stage speaker' },
+        { type: 'use', item: 'terminal', label: 'Stage controls', hint: 'Shut down the stage controls' } ] },
+    ],
+    layout: [
+      '################################',
+      '#M.....#.......M.........#h,h,h#',
+      '#.KK...#..C.C.C.C.C.C.C..#,,,,,#',
+      '#.KK...#.................#,,,,,#',
+      '#......#..CC..CC..CC..CC.#,,H,,#',
+      '#......#..CC..CC..CC..CC.##,####',
+      '###.####................H......#',
+      '#...L.....CC..CC..CC......##,###',
+      '#.........CC..CC..CC......#,,,,#',
+      '#.KKKKK..................H#,h,,#',
+      '#.......M.........L.......#,,,,#',
+      '#..H......CC..CC..CC......#,,H,#',
+      '#.........CC..CC..CC......######',
+      '#.......C.........C....H.......#',
+      '#######.#########.######.#######',
+      '#,,h,#........H..........#,,,,h#',
+      '#,,,,#...................#,,,,,#',
+      '#,,,,....K.K.........L....,,,,,#',
+      '#,,,M#...................#,,M,,#',
+      '#######.......S..........#######',
+      '##############E#################',
+    ],
+  },
+  {
+    id: 'castle',
+    name: 'Ravenmoor Keep',
+    tagline: 'The lady of the keep still waits for her guests.',
+    monster: 'widow',
+    monsterName: 'The Widow',
+    outdoor: false,
+    wallH: 5,
+    fog: 0x050608, fogDensity: 0.065,
+    hemi: [0x303848, 0x08080a, 1.0],
+    tex: { floor: 'stoneFloor', alt: 'redCarpet', open: 'grass', wall: 'stoneBrick', ceiling: 'stoneCeiling' },
+    hide: { H: 'wardrobe', h: 'barrel' },
+    prop: { C: 'pillar', K: 'table', L: 'brazier' },
+    lightColor: 0xff8a3a,
+    exitLabel: 'main gate',
+    finds: [
+      { item: 'rune', noun: 'rune stones', title: 'Gather the glowing rune stones' },
+      { item: 'candle', noun: 'black candles', title: 'Collect the black candles' },
+      { item: 'portrait', noun: 'portrait pieces', title: 'Find the torn portrait pieces' },
+      { item: 'bone', noun: 'finger bones', title: "Recover the Widow's finger bones" },
+    ],
+    tasks: [
+      { title: 'Break the crypt seal', steps: [
+        { type: 'pickup', item: 'silverkey', label: 'Silver key', hint: 'Find the silver key' },
+        { type: 'use', item: 'chest', label: 'Iron chest', hint: 'Unlock the iron chest' },
+        { type: 'use', item: 'seal', label: 'Seal stone', hint: 'Shatter the seal stone' } ] },
+      { title: 'Perform the cleansing rite', steps: [
+        { type: 'pickup', item: 'holywater', label: 'Holy water', hint: 'Find the holy water' },
+        { type: 'pickup', item: 'chalice', label: 'Chalice', hint: 'Find the silver chalice' },
+        { type: 'use', item: 'altar', label: 'Altar', hint: 'Place them on the altar' } ] },
+      { title: 'Raise the portcullis', steps: [
+        { type: 'pickup', item: 'crank', label: 'Crank handle', hint: 'Find the crank handle' },
+        { type: 'use', item: 'winch', label: 'Winch', hint: 'Turn the winch' } ] },
+      { title: 'Read the forbidden book', steps: [
+        { type: 'pickup', item: 'lens', label: 'Reading glass', hint: 'Find the reading glass' },
+        { type: 'use', item: 'lectern', label: 'Lectern', hint: 'Read the book on the lectern' } ] },
+    ],
+    layout: [
+      '################################',
+      '#h.......#......M.....#...M....#',
+      '#..K.K.K.#............#.C....C.#',
+      '#..K.K.K....C......C......K....#',
+      '#h.......#....,,,,....#..L...H.#',
+      '#..K.K.K.#....,,,,....#.C....C.#',
+      '#........#....,,,,....#........#',
+      '####.#####....,,,,....####.#####',
+      '#.........C...,,,,...C.........#',
+      '#..H..........,,,,...........h.#',
+      '#.....C.......,,,,.......C.....#',
+      '#...L.........,,,,.........L...#',
+      '#.....C.......,,,,.......C.....#',
+      '#.............,,,,.............#',
+      '#####.####....,,,,....####.#####',
+      '#....M...#____,,,,____#........#',
+      '#.h..h...#__C_,,,,_C__#.K..K.h.#',
+      '#.........____,,,,____.........#',
+      '#.h...h..#__L_,,,,____#..M....H#',
+      '#....H...#____,,,,____#........#',
+      '##########____,,,,____##########',
+      '##########____,S,,____##########',
+      '##########__h_,,,,____##########',
+      '##########____,,,,_h__##########',
+      '###############E################',
+    ],
+  },
+];
+
+export const FLOOR_CHARS = new Set(['.', ',', '_', 'S', 'M']);
