@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- Source art for the home-screen icons. Render with: node tools/make-icons.mjs -->
+<html><head><style>html,body{margin:0;background:#000}svg{display:block}</style></head><body>
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="38%" r="70%">
+      <stop offset="0" stop-color="#1c1416"/><stop offset="0.6" stop-color="#0a080a"/><stop offset="1" stop-color="#030203"/>
+    </radialGradient>
+    <linearGradient id="beam" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#fff3d0" stop-opacity="0.85"/><stop offset="0.55" stop-color="#fff0c8" stop-opacity="0.25"/><stop offset="1" stop-color="#fff0c8" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="eye" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffd0c8"/><stop offset="0.25" stop-color="#ff3341"/><stop offset="1" stop-color="#b3121b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pool" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#5a5030" stop-opacity="0.9"/><stop offset="1" stop-color="#5a5030" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#sky)"/>
+  <!-- pine silhouettes -->
+  <g fill="#050605">
+    <path d="M-20 512 L40 250 L100 512Z"/><path d="M30 512 L95 300 L160 512Z"/>
+    <path d="M360 512 L420 270 L480 512Z"/><path d="M420 512 L490 230 L560 512Z"/>
+  </g>
+  <!-- ground lit by the flashlight -->
+  <ellipse cx="256" cy="470" rx="170" ry="38" fill="url(#pool)"/>
+  <!-- flashlight beam -->
+  <path d="M232 512 L280 512 L430 0 L120 0 Z" fill="url(#beam)"/>
+  <!-- the figure at the edge of the light -->
+  <path d="M236 214 C236 186 276 186 276 214 L280 250 L292 330 L284 400 L270 400 L262 334 L250 334 L242 400 L228 400 L220 330 L232 250 Z" fill="#070606" opacity="0.92"/>
+  <path d="M232 250 L206 360 L214 362 L240 262 Z M280 250 L306 360 L298 362 L272 262 Z" fill="#070606" opacity="0.92"/>
+  <!-- eyes -->
+  <circle cx="246" cy="210" r="22" fill="url(#eye)"/>
+  <circle cx="267" cy="210" r="22" fill="url(#eye)"/>
+  <circle cx="246" cy="210" r="4.5" fill="#fff"/>
+  <circle cx="267" cy="210" r="4.5" fill="#fff"/>
+</svg>
+</body></html>
