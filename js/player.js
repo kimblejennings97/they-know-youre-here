@@ -11,7 +11,8 @@ export class Player {
     this.noise = 0; this.bob = 0; this.stepAcc = 0; this.eye = 1.62; this.lowBeep = 0;
 
     const q = game.settings.quality === 'high';
-    const fl = this.flash = new THREE.SpotLight(0xfff0d8, 55, 34, 0.5, 0.45, 1.1);
+    // angle (half-width of the cone, radians) comes from the "beam width" setting
+    const fl = this.flash = new THREE.SpotLight(0xfff0d8, 55, 34, game.settings.beam, 0.45, 1.1);
     fl.position.set(0.2, -0.15, 0.1);
     fl.target.position.set(0, -0.35, -6);
     fl.castShadow = q;

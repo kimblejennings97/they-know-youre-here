@@ -53,6 +53,9 @@
         <span class="label">Flashlight battery</span>
         <div class="seg" id="batt"><button data-v="on">On</button><button data-v="off">Off</button></div>
         <small>Batteries drain; find spares. +25% score.</small>
+        <span class="label" style="margin-top:12px">Beam width</span>
+        <input type="range" class="beam" id="beam-menu" min="0.35" max="0.9" step="0.01">
+        <div class="ticks"><span>Narrow</span><span>Wide</span></div>
       </div>
       <div class="opt">
         <span class="label">Graphics</span>
@@ -134,6 +137,7 @@
     <label class="slider">Look sensitivity <input type="range" id="sens" min="0.3" max="2.5" step="0.1"></label>
     <label class="slider">Volume <input type="range" id="vol" min="0" max="1" step="0.05"></label>
     <label class="slider">Brightness <input type="range" id="bright" min="0.7" max="2.2" step="0.05"></label>
+    <label class="slider">Flashlight beam width <input type="range" class="beam" id="beam-pause" min="0.35" max="0.9" step="0.01"></label>
     <button id="resume" class="big">Resume</button>
     <button id="quit" class="link">Quit to menu</button>
   </div>

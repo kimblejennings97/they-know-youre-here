@@ -1,6 +1,6 @@
 // Settings and best times / high scores, kept in localStorage.
 const SKEY = 'tkyh-settings-v1', RKEY = 'tkyh-records-v1';
-const DEFAULTS = { map: 'camp', difficulty: 'easy', length: 15, battery: true, quality: 'retro', sens: 1, volume: 0.8, bright: 1.25 };
+const DEFAULTS = { map: 'camp', difficulty: 'easy', length: 15, battery: true, quality: 'retro', sens: 1, volume: 0.8, bright: 1.25, beam: 0.62 };
 
 function read(k) { try { return JSON.parse(localStorage.getItem(k)) || null; } catch (e) { return null; } }
 function write(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }

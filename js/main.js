@@ -88,6 +88,16 @@ class Game {
     $('bright').value = s.bright;
     $('bright').oninput = () => { s.bright = +$('bright').value; this.renderer.toneMappingExposure = s.bright; store.saveSettings(s); };
     this.renderer.toneMappingExposure = s.bright;
+    // beam width: same setting from the menu card and the pause screen, applied live
+    const beams = document.querySelectorAll('input.beam');
+    beams.forEach(el => {
+      el.value = s.beam;
+      el.oninput = () => {
+        s.beam = +el.value; beams.forEach(o => { o.value = s.beam; });
+        if (this.player) this.player.flash.angle = s.beam;
+        store.saveSettings(s);
+      };
+    });
     this.input.sens = s.sens;
     this.refreshMenu();
   }
